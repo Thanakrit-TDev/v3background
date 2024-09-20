@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask HTML Rendering</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <style>
+        .slider-container {
+            width: 60%;
+            margin: 20px auto;
+            text-align: center;
+        }
+        .slider {
+            -webkit-appearance: none; /* For Chrome and Safari */
+            appearance: none;
+            width: 100%;
+            height: 8px; /* Thickness of the slider track */
+            background: #ddd;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px; /* Width of the slider thumb */
+            height: 20px; /* Height of the slider thumb */
+            background: #4CAF50;
+            cursor: pointer;
+        }
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+        .value {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+    </style>
+    <h1>Welcome to Flask!</h1>
+    <p>This is an example of rendering HTML using Flask.</p>
+	<!-- <img style="display: block;-webkit-user-select: none;margin: auto;background-color: hsl(0, 0%, 25%);" src="http://127.0.0.1:3501/video_feed_process"> -->
+    <div style="display: flex; gap: 10px;">
+        <div>
+            <img style="display: block;-webkit-user-select: none;margin: auto;background-color: hsl(0, 0%, 25%);" src="http://127.0.0.1:3501/video_feed_process">
+        </div>
+        <div>
+            <img style="display: block;-webkit-user-select: none;margin: auto;background-color: hsl(0, 0%, 25%);" src="http://127.0.0.1:3501/video_feed_process_mask">
+        </div>
+        <div style="display: flex; flex-direction: column;">
+            <input type="range" id="slider1" class="slider" min="1" max="255" value="1" step="1" />
+            <input type="range" id="slider2" class="slider" min="1" max="255" value="98" step="1" />
+            <input type="range" id="slider3" class="slider" min="1" max="255" value="1" step="1" />
+            <input type="range" id="slider4" class="slider" min="1" max="255" value="255" step="1" />
+            <input type="range" id="slider5" class="slider" min="1" max="255" value="67" step="1" />
+            <input type="range" id="slider6" class="slider" min="1" max="255" value="162" step="1" />
+            <input type="range" id="slider7" class="slider" min="1" max="255" value="43" step="1" />
+            <input type="range" id="slider8" class="slider" min="-15" max="15" value="53" step="1" />
+            <input type="range" id="slider9" class="slider" min="1" max="255" value="5" step="1" />
+            <input type="range" id="slider10" class="slider" min="1" max="2000" value="1000" step="1" />
+        </div>
+    </div>
+
+    <script>
+        // Function to send slider data to Flask
+        function sendSliderData() {
+            const slider1Value = document.getElementById('slider1').value;
+            const slider2Value = document.getElementById('slider2').value;
+            const slider3Value = document.getElementById('slider3').value;
+            const slider4Value = document.getElementById('slider4').value;
+            const slider5Value = document.getElementById('slider5').value;
+            const slider6Value = document.getElementById('slider6').value;
+            const slider7Value = document.getElementById('slider7').value;
+            const slider8Value = document.getElementById('slider8').value;
+            const slider9Value = document.getElementById('slider9').value;
+            const slider10Value = document.getElementById('slider10').value;
+
+
+            // Update display values
+            // document.getElementById('slider1Output').textContent = 'Value: ' + slider1Value;
+            // document.getElementById('slider2Output').textContent = 'Value: ' + slider2Value;
+            // document.getElementById('slider3Output').textContent = 'Value: ' + slider3Value;
+
+            // Send data to Flask
+            fetch('http://127.0.0.1:2545/Setting_realtime_mask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    Hue_Min: slider1Value,
+                    Hue_Max: slider2Value,
+                    Sat_Min: slider3Value,
+                    Sat_Max: slider4Value,
+                    Val_Min: slider5Value,
+                    Val_MAX: slider6Value,
+                    Brightness: slider7Value,
+                    Contrast: slider8Value,
+                    Saturation: slider9Value,
+                    Range: slider10Value
+                }),
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data); // Log the server response for debugging
+            })
+            .catch(error => {
+                console.error('Error:', error); // Handle any errors
+            });
+        }
+        // Attach event listeners to sliders
+        document.getElementById('slider1').addEventListener('input', sendSliderData);
+        document.getElementById('slider2').addEventListener('input', sendSliderData);
+        document.getElementById('slider3').addEventListener('input', sendSliderData);
+        document.getElementById('slider4').addEventListener('input', sendSliderData);
+        document.getElementById('slider5').addEventListener('input', sendSliderData);
+        document.getElementById('slider6').addEventListener('input', sendSliderData);
+        document.getElementById('slider7').addEventListener('input', sendSliderData);
+        document.getElementById('slider8').addEventListener('input', sendSliderData);
+        document.getElementById('slider9').addEventListener('input', sendSliderData);
+        document.getElementById('slider10').addEventListener('input', sendSliderData);
+    </script>
+
+</body>
+</html>
